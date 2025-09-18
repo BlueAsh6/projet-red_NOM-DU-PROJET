@@ -12,7 +12,7 @@ import (
 
 type Character struct {
 	Nom              string
-	Classe           string
+	Classe           string 
 	Niveau           int
 	PointsVieMax     int
 	PointsVieActuels int
@@ -35,6 +35,7 @@ type Arme struct {
     Description string
 }
 
+// compteur de mort 
 var deathCount int
 func loadDeaths() int {
     data, err := os.ReadFile("save.txt")
@@ -98,6 +99,7 @@ func creerArmes() []Arme {
     }
 }
 
+// Choix 0-6 achat ou retour - argent = ou pas
 func torLeMarchand(c *Character, reader *bufio.Reader) {
     armes := creerArmes()
 
@@ -159,25 +161,24 @@ func vousEtesMort() {
     os.Exit(0)
 }
 
-// Ajoute de l'XP au joueur, gère le passage de niveau et restaure PV/augmente PV max
+// Ajoute de l'XP au joueur, gère le passage de niveau et restaure PV/augmente PV max - 
+// boucle au cas où on monte plusieurs niveaux d'un coup
 func gagnerXP(joueur *Character, xp int) {
 	joueur.XP += xp
 
-	// boucle au cas où on monte plusieurs niveaux d'un coup
 	for {
 		xpPourNiveau := xpNeededForLevel(joueur.Niveau)
 		if joueur.XP < xpPourNiveau {
 			break
 		}
-		// on consomme l'XP du niveau courant, on augmente le niveau
 		joueur.XP -= xpPourNiveau
 		joueur.Niveau++
-		joueur.PointsVieMax += 20                // effet : +20 PV max / niveau
-		joueur.PointsVieActuels = joueur.PointsVieMax // pleine vie au up
+		joueur.PointsVieMax += 20                
+		joueur.PointsVieActuels = joueur.PointsVieMax 
 		printSlow(fmt.Sprintf("⬆️ Niveau %d atteint ! PV max augmentés à %d 🎉", joueur.Niveau, joueur.PointsVieMax), 40*time.Millisecond)
 	}
 
-	// affiche XP restant jusqu'au prochain niveau
+	
 	restant := xpNeededForLevel(joueur.Niveau) - joueur.XP
 	printSlow(fmt.Sprintf("🔸 Il vous reste %d XP pour atteindre le niveau %d.", restant, joueur.Niveau+1), 30*time.Millisecond)
 }
@@ -221,7 +222,7 @@ func afficherLieux(lieux []Land) {
 	fmt.Println("══════════════════════════════════════════════")
 }
 
-// Création interactive d’un personnage
+// Création interactive d’un personnage / Nom / Classe / Inventaire
 func createCharacterInteractive(reader *bufio.Reader) Character {
 	fmt.Println()
 	fmt.Println("✨ Création de personnage ✨")
@@ -272,7 +273,6 @@ func createCharacterInteractive(reader *bufio.Reader) Character {
 }
 
 // Fonction de calcul arène dégats
-
 func calculerDegatsJoueur(c *Character) int {
     base := 5 // dégâts de base 
 
@@ -373,6 +373,7 @@ func epicerie(c *Character, reader *bufio.Reader) {
 	}
 }
 
+// Fonction de l'armurerie 
 func armurerie(c *Character, reader *bufio.Reader) {
 	for {
 		printSlow("Bienvenue à l’⚒️  ARMURERIE", 40*time.Millisecond)
@@ -409,6 +410,7 @@ func armurerie(c *Character, reader *bufio.Reader) {
 	}
 }
 
+// BASE DE VIE 
 func baseSurvivant(c *Character, reader *bufio.Reader) {
     for {
         printSlow("Bienvenue à votre 🏠 BASE DU SURVIVANT", 40*time.Millisecond)
