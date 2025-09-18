@@ -79,7 +79,7 @@ func initLand(nom, description string) Land {
 	}
 }
 
-// Fonction pour écrire avec effet "slow"
+// Animation textuel
 func printSlow(text string, delay time.Duration) {
 	for _, r := range text {
 		fmt.Printf("%c", r)
@@ -88,7 +88,7 @@ func printSlow(text string, delay time.Duration) {
 	fmt.Println()
 }
 
-//======== Fonction TOR LE MARCHAND ================
+//Pour initialiser les armes de l'armurerie
 func creerArmes() []Arme {
     return []Arme{
         {"Épée Segfault", 50, 15, "Une épée bugguée qui inflige 15 dégâts."},
@@ -139,7 +139,7 @@ func torLeMarchand(c *Character, reader *bufio.Reader) {
     }
 }
 
-// renvoie le nombre d'XP requis pour le niveau donné
+// renvoie le nombre d'XP requis pour le niveau en cours
 func xpNeededForLevel(niveau int) int {
 	return niveau * 100
 }
@@ -273,25 +273,23 @@ func createCharacterInteractive(reader *bufio.Reader) Character {
 }
 
 // Fonction de calcul arène dégats
+// Calcul des effets
 func calculerDegatsJoueur(c *Character) int {
-    base := 5 // dégâts de base 
-
-    // Définit les bonus selon les armes connues
-    if c.Inventaire["Épée Segfault"] > 9 {
+    base := 5
+    if c.Inventaire["Épée Segfault"] > 10 {
         base += 15
     }
     if c.Inventaire["Arc Latence 300ms"] > 10 {
         base += 20
     }
-    if c.Inventaire["Trident Proxy"] > 25 {
+    if c.Inventaire["Trident Proxy"] > 15 {
         base += 30
     }
-
     return base
 }
 
 
-// ===== FONCTIONS DES LIEUX =====
+// Initialisation de la mairie
 func mairie(c *Character, reader *bufio.Reader) {
 	for {
 		printSlow("Bienvenue à la 🏛  MAIRIE GLACIALE", 40*time.Millisecond)
@@ -312,6 +310,7 @@ func mairie(c *Character, reader *bufio.Reader) {
 	}
 }
 
+// Initialisation de l'epicerie
 func epicerie(c *Character, reader *bufio.Reader) {
 	for {
 		printSlow("Bienvenue à l’🛒  ÉPICERIE HIVERNALE", 40*time.Millisecond)
@@ -410,7 +409,7 @@ func armurerie(c *Character, reader *bufio.Reader) {
 	}
 }
 
-// BASE DE VIE 
+// Initialisation de la base du survivant
 func baseSurvivant(c *Character, reader *bufio.Reader) {
     for {
         printSlow("Bienvenue à votre 🏠 BASE DU SURVIVANT", 40*time.Millisecond)
@@ -432,7 +431,7 @@ func baseSurvivant(c *Character, reader *bufio.Reader) {
     }
 }
 
-// ================= ARÈNE : types & fonctions =================
+// ARÈNE : types & fonctions 
 
 type Ennemi struct {
 	Nom   string
@@ -442,6 +441,7 @@ type Ennemi struct {
 	Boss  bool
 }
 
+// Stats des ennemis
 func creerEnnemis() []Ennemi {
 	return []Ennemi{
 		{"Script Kiddie", 50, 15, 10, false},
@@ -519,7 +519,7 @@ func combat(joueur *Character, ennemi Ennemi, reader *bufio.Reader) bool {
 
 		if choix == "1" {
 			degatsBase := calculerDegatsJoueur(joueur)
-			dmg := rand.Intn(5) + degatsBase // petit facteur aléatoire
+			dmg := rand.Intn(5) + degatsBase
 			fmt.Printf("💥 Vous attaquez avec vos armes et infligez %d dégâts !\n", dmg)
 		pvEnnemi -= dmg
 
@@ -680,7 +680,7 @@ func jeu(joueur *Character, lieux []Land, reader *bufio.Reader) {
 		case 2:
 			baseSurvivant(joueur, reader)
 		case 3:
-			arene(joueur, reader) // <<< ARÈNE intégrée ici
+			arene(joueur, reader)
 		case 4:
 			epicerie(joueur, reader)
 		case 5:
